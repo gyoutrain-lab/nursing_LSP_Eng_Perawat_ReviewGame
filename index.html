@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinical English Voice & Audio Practice Arena (C2+ Expert)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .pulse-mic { animation: pulse-ring 1.5s infinite ease-in-out; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white custom-scrollbar">
+
+  <!-- Header & Navigation Bar -->
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="bg-gradient-to-tr from-indigo-600 to-purple-600 p-2.5 rounded-xl shadow-lg shadow-indigo-500/20">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="bg-indigo-500/20 text-indigo-300 text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full border border-indigo-500/30">C2+ CLINICAL ARENA</span>
+            <span id="streakBadge" class="bg-amber-500/20 text-amber-300 text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full border border-amber-500/30 flex items-center gap-1">
+              <span>🔥 Streak:</span> <span id="streakCount">0</span>
+            </span>
+          </div>
+          <h1 class="text-lg sm:text-xl font-extrabold text-white tracking-tight">Voice & Audio Practice Engine</h1>
+        </div>
+      </div>
+
+      <!-- Live Interactive Score Bar -->
+      <div class="flex items-center space-x-3 bg-slate-950 px-4 py-2 rounded-2xl border border-slate-800 shadow-inner">
+        <div class="text-center min-w-[70px]">
+          <span class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold">Total Score</span>
+          <span id="scoreDisplay" class="text-base font-black text-indigo-400 font-mono-code">0</span>
+        </div>
+        <div class="h-7 w-px bg-slate-800"></div>
+        <div class="text-center min-w-[70px]">
+          <span class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold">Accuracy</span>
+          <span id="accuracyDisplay" class="text-base font-black text-emerald-400 font-mono-code">100%</span>
+        </div>
+        <div class="h-7 w-px bg-slate-800"></div>
+        <div class="text-center min-w-[65px]">
+          <span class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold">Sound</span>
+          <button onclick="toggleAudio()" id="audioToggleBtn" class="text-xs font-bold text-slate-300 hover:text-white px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 mt-0.5">
+            🔊 ON
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Game Arena -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+    <!-- Left Column: Category Matrix & Navigation -->
+    <aside class="lg:col-span-1 space-y-5">
+      
+      <!-- Category Selection Matrix -->
+      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl">
+        <h2 class="text-xs font-black uppercase tracking-widest text-indigo-400 mb-3">Clinical Category Matrix</h2>
+        <div class="space-y-2">
+          <button onclick="selectCategory('all')" id="cat-all" class="cat-btn w-full text-left p-3 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg flex justify-between items-center">
+            <span>All Clinical Modules</span>
+            <span class="bg-white/20 text-white text-[10px] px-2 py-0.5 rounded-full font-mono-code">30 Scenarios</span>
+          </button>
+          <button onclick="selectCategory('part1')" id="cat-part1" class="cat-btn w-full text-left p-3 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:bg-slate-800 hover:text-white border border-slate-800 flex justify-between items-center">
+            <span class="truncate">1. Irregular Passives & Relatives</span>
+            <span class="bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-full font-mono-code">10</span>
+          </button>
+          <button onclick="selectCategory('part2')" id="cat-part2" class="cat-btn w-full text-left p-3 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:bg-slate-800 hover:text-white border border-slate-800 flex justify-between items-center">
+            <span class="truncate">2. Complex Prepositions</span>
+            <span class="bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-full font-mono-code">10</span>
+          </button>
+          <button onclick="selectCategory('part3')" id="cat-part3" class="cat-btn w-full text-left p-3 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:bg-slate-800 hover:text-white border border-slate-800 flex justify-between items-center">
+            <span class="truncate">3. Inverted Subjunctives</span>
+            <span class="bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-full font-mono-code">10</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Matrix Question Index Grid -->
+      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black uppercase tracking-widest text-indigo-400">Scenario Grid</span>
+          <span id="gridProgressText" class="text-[10px] font-mono-code text-slate-400">0/30 Completed</span>
+        </div>
+        <div id="matrixGrid" class="grid grid-cols-5 gap-1.5 max-h-52 overflow-y-auto custom-scrollbar p-2 bg-slate-950 border border-slate-800/80 rounded-xl">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Game Rules & Scoring Banner -->
+      <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-800/80 text-xs text-slate-400 space-y-2">
+        <div class="font-bold text-slate-200 flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Arena Rules & Scoring
+        </div>
+        <ul class="list-disc list-inside space-y-1 text-[11px] leading-relaxed">
+          <li><span class="text-emerald-400 font-bold">+100 pts</span> for correct grammar selection.</li>
+          <li><span class="text-rose-400 font-bold">-100 pts</span> for incorrect answer + BAM sound effect.</li>
+          <li>Use <span class="text-indigo-300 font-semibold">TTS Speech</span> to listen to native voice rhythm.</li>
+          <li>Record your voice to test pronunciation accuracy.</li>
+        </ul>
+      </div>
+
+    </aside>
+
+    <!-- Right Column: Interactive Dialogal Scenario & Voice Engine -->
+    <section class="lg:col-span-3 space-y-5">
+
+      <!-- Active Scenario Dialogal Card -->
+      <div class="bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-2xl relative overflow-hidden">
+        
+        <!-- Background Ambient Glow -->
+        <div class="absolute -top-24 -right-24 w-60 h-60 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Scenario Top Metadata -->
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4 mb-6">
+          <div class="flex items-center space-x-2">
+            <span id="scenarioIndexBadge" class="bg-indigo-600 text-white font-mono-code text-xs font-bold px-3 py-1 rounded-lg">Scenario 1/30</span>
+            <span id="scenarioModuleBadge" class="bg-slate-800 text-indigo-300 text-xs font-bold px-3 py-1 rounded-lg border border-slate-700">Irregular Passives</span>
+          </div>
+
+          <!-- Audio & Speech Toolbar -->
+          <div class="flex items-center space-x-2">
+            <button onclick="speakDialogue()" class="bg-indigo-950/80 hover:bg-indigo-900 text-indigo-300 hover:text-white border border-indigo-800/80 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 shadow-sm">
+              <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+              <span>Listen to Speech (TTS)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Clinical Dialogal Box -->
+        <div class="bg-slate-950 p-5 sm:p-6 rounded-2xl border border-slate-800/80 mb-6 space-y-4">
+          <div class="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-indigo-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+            <span>Clinical Case Conference Dialogue</span>
+          </div>
+
+          <!-- Dialogue Lines -->
+          <div id="dialogueBox" class="space-y-3">
+            <!-- Dynamically populated dialogue speakers -->
+          </div>
+        </div>
+
+        <!-- Target Target Choice Options -->
+        <div class="space-y-3 mb-6">
+          <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Select Correct Clinical Syntax</h3>
+          <div id="optionsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Dynamically populated option buttons -->
+          </div>
+        </div>
+
+        <!-- Pronunciation Voice Practice Module -->
+        <div class="bg-slate-950/80 p-5 rounded-2xl border border-slate-800 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/60 pb-3">
+            <div>
+              <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+                Pronunciation Evaluation Engine
+              </h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">Record your speech reading the complete correct target sentence aloud.</p>
+            </div>
+
+            <!-- Voice Control Button -->
+            <button onclick="startVoiceRecording()" id="micBtn" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-md flex items-center justify-center space-x-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+              <span id="micBtnText">Record Voice</span>
+            </button>
+          </div>
+
+          <!-- Speech Transcript & Accuracy Score Display -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="sm:col-span-2 bg-slate-900 p-3 rounded-xl border border-slate-800">
+              <span class="block text-[10px] text-slate-500 uppercase font-bold">Recorded Speech Transcript</span>
+              <p id="speechTranscript" class="text-xs text-slate-300 font-mono-code italic mt-1">"Click Record Voice and speak the sentence into your microphone..."</p>
+            </div>
+            <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 flex flex-col justify-center items-center text-center">
+              <span class="text-[10px] text-slate-500 uppercase font-bold">Pronunciation Score</span>
+              <span id="speechScore" class="text-xl font-black text-slate-500 font-mono-code">-- %</span>
+              <span id="speechFeedback" class="text-[10px] text-slate-400 font-medium mt-0.5">Awaiting voice input</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Linguistic Explanation Feedback Modal / Box -->
+        <div id="explanationBox" class="hidden mt-6 p-5 rounded-2xl border text-xs sm:text-sm leading-relaxed transition-all">
+          <!-- Populated after option click -->
+        </div>
+
+        <!-- Next / Previous Scenario Controls -->
+        <div class="flex items-center justify-between mt-6 pt-4 border-t border-slate-800">
+          <button onclick="prevScenario()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold transition-all">
+            ← Previous
+          </button>
+          <button onclick="nextScenario()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md">
+            Next Scenario →
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    // 30 HIGH-COMPLEXITY (C2+ LEVEL) DIALOGAL CLINICAL QUESTIONS DATASET
+    const clinicalDialogues = [
+      // PART 1: 10 Dialogues - Irregular Verbs, Passives, Reduced Relatives
+      {
+        id: 1,
+        category: "part1",
+        categoryName: "Irregular Passives & Relatives",
+        speakerA: "Senior Consultant",
+        lineA: "Dr. Evans, what is the status of the patient who experienced severe shear stress during systemic malignant hypertension?",
+        speakerB: "Senior Resident",
+        lineB: "The arterial graft, having [_____] extreme hemodynamic pressure, was found to have [_____] complete intimomedial disruption upon microscopic review.",
+        targetPhrase: "The arterial graft, having withstood extreme hemodynamic pressure, was found to have undergone complete intimomedial disruption.",
+        options: ["A. withstood ; undergone", "B. withstanded ; underwent", "C. withstood ; undergoed", "D. withstand ; undergone"],
+        correct: 0,
+        explanation: "Linguistic Rationale: 'Withstand' and 'undergo' are irregular verbs with past participles 'withstood' and 'undergone'. The perfect participle active clause ('having withstood') is followed by the perfect passive infinitive auxiliary structure ('to have undergone')."
+      },
+      {
+        id: 2,
+        category: "part1",
+        categoryName: "Irregular Passives & Relatives",
+        speakerA: "ICU Attending",
+        lineA: "Why was the patient with cerebral edema transferred so abruptly?",
+        speakerB: "Fellow",
+        lineB: "The intracranial pressure, which [_____] sharply despite osmotic diuresis, necessitated immediate neurosurgical decompression.",
+        targetPhrase: "The intracranial pressure, which had arisen sharply despite osmotic diuresis, necessitated immediate neurosurgical decompression.",
+        options: ["A. had rose", "B. had arisen", "C. had raised", "D. had arised"],
+        correct: 1,
+        explanation: "Linguistic Rationale: 'Arise' is an intransitive irregular verb (arise - arose - arisen). Intracranial pressure 'had arisen' (intransitive event). 'Raise' is transitive and requires a direct object."
+      },
+      {
+        id: 3,
+        category: "part1",
+        categoryName: "Irregular Passives & Relatives",
+        speakerA: "Infectious Disease Specialist",
+        lineA: "How far has the necrotizing soft-tissue infection extended?",
+        speakerB: "Surgical Registrar",
+        lineB: "The purulent exudate [_____] from the primary surgical site has [_____] to involve the deep fascial planes.",
+        targetPhrase: "The purulent exudate shed from the primary surgical site has spread to involve the deep fascial planes.",
+        options: ["A. shedding ; spreaded", "B. shed ; spreaded", "C. shed ; spread", "D. shedded ; spread"],
+        correct: 2,
+        explanation: "Linguistic Rationale: 'Shed' and 'spread' maintain identical forms in their past participle states (shed/shed/shed, spread/spread/spread). 'Shed' acts as a reduced relative passive participle modifying exudate ('exudate which was shed')."
+      },
+      {
+        id: 4,
+        category: "part1",
+        categoryName: "Irregular Passives & Relatives",
+        speakerA: "Trauma Lead",
+        lineA: "What caused the acute cardiac tamponade during thoracotomy?",
+        speakerB: "Surgical Fellow",
+        lineB: "The aortic aneurysm wall, having been severely weakened, was seen to [_____] directly into the pericardial sac.",
+        targetPhrase: "The aortic aneurysm wall, having been severely weakened, was seen to burst directly into the pericardial sac.",
+        options: ["A. burst", "B. bursted", "C. bursting", "D. be bursted"],
+        correct: 0,
+        explanation: "Linguistic Rationale: 'Burst' maintains its unchanged form across all principal parts (burst-burst-burst). 'Was seen to burst' uses the bare infinitive structure."
+      },
+      {
+        id: 5,
+        category: "part1",
+        categoryName: "Irregular Passives & Relatives",
+        speakerA: "Orthopedic Surgeon",
+        lineA: "What surgical technique will we use for this high-velocity fracture?",
+        speakerB: "Senior Resident",
+        lineB: "The distal femur, which was [_____] into multiple cortical fragments, requires open reduction and internal fixation.",
+        targetPhrase: "The distal femur, which was split into multiple cortical fragments, requires open reduction and internal fixation.",
+        options: ["A. splitted", "B. split", "C. splitting", "D. splat"],
+        correct: 1,
+        explanation: "Linguistic Rationale: The irregular verb 'split' forms its past participle as 'split' (not 'splitted'). In the passive relative clause 'which was split', the past participle functions passively."
+      },
+      {
+        id: 6,
+        category: "part1",
+        categoryName: "Irregular Passives & Relatives",
+        speakerA: "Rheumatologist",
+        lineA: "What is the mechanism of glomerular injury in this lupus nephritis case?",
+        speakerB: "Pathology Registrar",
+        lineB: "Circulating immune complexes, [_____] tightly to renal basement membranes, activate the classical complement cascade.",
+        targetPhrase: "Circulating immune complexes, bound tightly to renal basement membranes, activate the classical complement cascade.",
+        options: ["A. bound", "B. binded", "C. bindingly", "D. bind"],
+        correct: 0,
+        explanation: "Linguistic Rationale: 'Bound' is the past participle of 'bind'. Here, 'bound tightly' functions as a reduced relative clause ('which are bound tightly') modifying immune complexes."
+      },
+      {
+        id: 7,
+        category: "part1",
+        categoryName: "Irregular Passives & Relatives",
+        speakerA: "Clinical Pharmacist",
+        lineA: "How was the potential medication overdose prevented?",
+        speakerB: "Charge Nurse",
+        lineB: "The dosage discrepancy, [_____] by the ICU nurse during shift handoff, was immediately corrected.",
+        targetPhrase: "The dosage discrepancy, caught by the ICU nurse during shift handoff, was immediately corrected.",
+        options: ["A. catched", "B. caught", "C. catch", "D. catching"],
+        correct: 1,
+        explanation: "Linguistic Rationale: 'Catch' has irregular past participle 'caught'. The phrase is a reduced passive relative clause standing for 'which was caught'."
+      },
+      {
+        id: 8,
+        category: "part1",
+        categoryName: "Irregular Passives & Relatives",
+        speakerA: "Neurology Attending",
+        lineA: "Is the patient eligible for IV thrombolysis?",
+        speakerB: "Stroke Fellow",
+        lineB: "No, the patient, having [_____] an intracranial hemorrhage two weeks ago, is strictly contraindicated.",
+        targetPhrase: "No, the patient, having undergone an intracranial hemorrhage two weeks ago, is strictly contraindicated.",
+        options: ["A. undergone", "B. underwent", "C. undergoed", "D. undergo"],
+        correct: 0,
+        explanation: "Linguistic Rationale: Perfect participle active construction 'having undergone' uses the past participle form of the irregular verb 'undergo'."
+      },
+      {
+        id: 9,
+        category: "part1",
+        categoryName: "Irregular Passives & Relatives",
+        speakerA: "Interventional Radiologist",
+        lineA: "Where is the tip of the central venous catheter positioned?",
+        speakerB: "Radiology Resident",
+        lineB: "The catheter, [_____] through the internal jugular vein, lies precisely at the cavoatrial junction.",
+        targetPhrase: "The catheter, fed through the internal jugular vein, lies precisely at the cavoatrial junction.",
+        options: ["A. feeded", "B. fed", "C. feeding", "D. feed"],
+        correct: 1,
+        explanation: "Linguistic Rationale: Irregular verb 'feed' -> 'fed' (feed/fed/fed). The reduced relative clause 'fed through...' replaces 'which was fed through'."
+      },
+      {
+        id: 10,
+        category: "part1",
+        categoryName: "Irregular Passives & Relatives",
+        speakerA: "Vascular Surgeon",
+        lineA: "What caused the sudden acute lower limb ischemia?",
+        speakerB: "Vascular Fellow",
+        lineB: "Multiple micro-emboli, [_____] off from a mural thrombus within the aneurysm, occluded the popliteal artery.",
+        targetPhrase: "Multiple micro-emboli, cast off from a mural thrombus within the aneurysm, occluded the popliteal artery.",
+        options: ["A. cast", "B. casted", "C. casting", "D. casten"],
+        correct: 0,
+        explanation: "Linguistic Rationale: 'Cast' remains unchanged in past participle form ('cast off'). Reduced passive relative clause: 'micro-emboli which were cast off'."
+      },
+
+      // PART 2: 10 Dialogues - Complex Prepositions & Clinical Collocations
+      {
+        id: 11,
+        category: "part2",
+        categoryName: "Complex Prepositions",
+        speakerA: "Cardiothoracic Lead",
+        lineA: "Why did we suspend continuous loop diuretic infusions in this patient?",
+        speakerB: "Cardiology Fellow",
+        lineB: "[_____] recent nephrotoxicity data, we switched to intermittent bolus dosing.",
+        targetPhrase: "In light of recent nephrotoxicity data, we switched to intermittent bolus dosing.",
+        options: ["A. In view to", "B. In light of", "C. With respect of", "D. In spite to"],
+        correct: 1,
+        explanation: "Linguistic Rationale: Complex preposition 'in light of' means 'taking into consideration / because of'."
+      },
+      {
+        id: 12,
+        category: "part2",
+        categoryName: "Complex Prepositions",
+        speakerA: "Trauma Surgeon",
+        lineA: "When did systemic inflammatory response syndrome develop?",
+        speakerB: "Surgical Registrar",
+        lineB: "The patient developed SIRS [_____] severe fecal contamination during emergency laparotomy.",
+        targetPhrase: "The patient developed SIRS subsequent to severe fecal contamination during emergency laparotomy.",
+        options: ["A. subsequent to", "B. subsequent from", "C. subsequent with", "D. subsequent of"],
+        correct: 0,
+        explanation: "Linguistic Rationale: Complex preposition 'subsequent to' means 'following / as a result of'."
+      },
+      {
+        id: 13,
+        category: "part2",
+        categoryName: "Complex Prepositions",
+        speakerA: "Hospital Administrator",
+        lineA: "Were stroke protocols strictly followed during emergency admission?",
+        speakerB: "ED Clinical Lead",
+        lineB: "Yes, the patient was managed [_____] national stroke clinical guidelines.",
+        targetPhrase: "Yes, the patient was managed in accordance with national stroke clinical guidelines.",
+        options: ["A. in accordance to", "B. in accordance with", "C. according with", "D. with accordance to"],
+        correct: 1,
+        explanation: "Linguistic Rationale: Idiomatic complex preposition: 'in accordance with' (never 'in accordance to')."
+      },
+      {
+        id: 14,
+        category: "part2",
+        categoryName: "Complex Prepositions",
+        speakerA: "Oncology Attending",
+        lineA: "What is the prognosis regarding local tissue invasion?",
+        speakerB: "Senior Registrar",
+        lineB: "We remain cautious [_____] complete tumor clearance due to carotid artery involvement.",
+        targetPhrase: "We remain cautious with respect to complete tumor clearance due to carotid artery involvement.",
+        options: ["A. with respect to", "B. in respect for", "C. with respect of", "D. respecting to"],
+        correct: 0,
+        explanation: "Linguistic Rationale: Idiomatic prepositional phrase: 'with respect to' (concerning/regarding)."
+      },
+      {
+        id: 15,
+        category: "part2",
+        categoryName: "Complex Prepositions",
+        speakerA: "Nephrologist",
+        lineA: "What triggered the sudden onset of acute tubular necrosis?",
+        speakerB: "ICU Resident",
+        lineB: "Acute kidney injury occurred [_____] massive intravascular hemolysis after blood transfusion.",
+        targetPhrase: "Acute kidney injury occurred consequent upon massive intravascular hemolysis after blood transfusion.",
+        options: ["A. consequent of", "B. consequent upon", "C. consequent with", "D. consequent for"],
+        correct: 1,
+        explanation: "Linguistic Rationale: Formal clinical complex preposition: 'consequent upon' (or 'consequent to'), meaning resulting from."
+      },
+      {
+        id: 16,
+        category: "part2",
+        categoryName: "Complex Prepositions",
+        speakerA: "Surgical Registrar",
+        lineA: "Should we administer prophylactic cefazolin now?",
+        speakerB: "Attending Surgeon",
+        lineB: "Yes, antibiotics must be administered prior [_____] surgical skin incision.",
+        targetPhrase: "Yes, antibiotics must be administered prior to surgical skin incision.",
+        options: ["A. to", "B. from", "C. than", "D. of"],
+        correct: 0,
+        explanation: "Linguistic Rationale: The prepositional phrase 'prior' strictly requires 'to'."
+      },
+      {
+        id: 17,
+        category: "part2",
+        categoryName: "Complex Prepositions",
+        speakerA: "Intensivist",
+        lineA: "Did vasopressor support resolve the profound septic shock?",
+        speakerB: "ICU Fellow",
+        lineB: "No, [_____] maximal norepinephrine titration, refractory shock persisted.",
+        targetPhrase: "No, notwithstanding maximal norepinephrine titration, refractory shock persisted.",
+        options: ["A. Despiting", "B. Notwithstanding", "C. Regardless for", "D. In spite to"],
+        correct: 1,
+        explanation: "Linguistic Rationale: Formal concessive preposition 'notwithstanding' takes a direct noun phrase complement."
+      },
+      {
+        id: 18,
+        category: "part2",
+        categoryName: "Complex Prepositions",
+        speakerA: "Anesthesiologist",
+        lineA: "How was the central line verified in this obese patient?",
+        speakerB: "Anesthesia Resident",
+        lineB: "Cannulation was achieved [_____] real-time ultrasound guidance.",
+        targetPhrase: "Cannulation was achieved by means of real-time ultrasound guidance.",
+        options: ["A. by means to", "B. by means of", "C. with means of", "D. in means of"],
+        correct: 1,
+        explanation: "Linguistic Rationale: Complex preposition 'by means of' denotes instrumentality."
+      },
+      {
+        id: 19,
+        category: "part2",
+        categoryName: "Complex Prepositions",
+        speakerA: "Trial Director",
+        lineA: "Why was Phase II enrollment terminated prematurely?",
+        speakerB: "Principal Investigator",
+        lineB: "The study was halted [_____] unexpected hepatotoxicity in the high-dose group.",
+        targetPhrase: "The study was halted on account of unexpected hepatotoxicity in the high-dose group.",
+        options: ["A. on account of", "B. by virtue to", "C. with account of", "D. in account for"],
+        correct: 0,
+        explanation: "Linguistic Rationale: 'On account of' indicates clinical reason/cause."
+      },
+      {
+        id: 20,
+        category: "part2",
+        categoryName: "Complex Prepositions",
+        speakerA: "Chief Medical Officer",
+        lineA: "Is the physician's clinical privilege subject to review?",
+        speakerB: "Ethics Chair",
+        lineB: "Yes, action was taken [_____] repeated procedural non-compliance.",
+        targetPhrase: "Yes, action was taken on the grounds of repeated procedural non-compliance.",
+        options: ["A. in the grounds for", "B. on the grounds of", "C. At grounds of", "D. With grounds to"],
+        correct: 1,
+        explanation: "Linguistic Rationale: Complex preposition 'on the grounds of' means based on the reason of."
+      },
+
+      // PART 3: 10 Dialogues - Inverted Subjunctive Conditionals & Advanced Conjunctions
+      {
+        id: 21,
+        category: "part3",
+        categoryName: "Inverted Subjunctives",
+        speakerA: "Vascular Attending",
+        lineA: "Could we have saved the ischemic lower extremity?",
+        speakerB: "Surgical Registrar",
+        lineB: "[_____] the team recognized the early compartment syndrome, emergency fasciotomy would have prevented necrosis.",
+        targetPhrase: "Had the team recognized the early compartment syndrome, emergency fasciotomy would have prevented necrosis.",
+        options: ["A. Should", "B. Had", "C. Were", "D. Unless"],
+        correct: 1,
+        explanation: "Linguistic Rationale: Inverted third conditional (equivalent to 'If the team had recognized...'). Omission of 'if' triggers auxiliary verb inversion 'Had the team recognized'."
+      },
+      {
+        id: 22,
+        category: "part3",
+        categoryName: "Inverted Subjunctives",
+        speakerA: "Neuro-ICU Nurse",
+        lineA: "What are the standing orders if intracranial pressure spikes?",
+        speakerB: "Senior Resident",
+        lineB: "[_____] the patient exhibit sudden neurological deterioration, administer 20% mannitol immediately.",
+        targetPhrase: "Should the patient exhibit sudden neurological deterioration, administer 20% mannitol immediately.",
+        options: ["A. Should", "B. Were", "C. Had", "D. Unless"],
+        correct: 0,
+        explanation: "Linguistic Rationale: Inverted first conditional ('Should the patient exhibit...') replacing 'If the patient should exhibit...'."
+      },
+      {
+        id: 23,
+        category: "part3",
+        categoryName: "Inverted Subjunctives",
+        speakerA: "Attending Cardiologist",
+        lineA: "What would be the contingency plan for acute hemodynamic collapse?",
+        speakerB: "Cardiology Fellow",
+        lineB: "[_____] the patient to develop ventricular fibrillation, immediate unsynchronized cardioversion would be delivered.",
+        targetPhrase: "Were the patient to develop ventricular fibrillation, immediate unsynchronized cardioversion would be delivered.",
+        options: ["A. Were", "B. Should", "C. Had", "D. Unless"],
+        correct: 0,
+        explanation: "Linguistic Rationale: Inverted second conditional structure ('Were the patient to develop...') substituting for 'If the patient were to develop...'."
+      },
+      {
+        id: 24,
+        category: "part3",
+        categoryName: "Inverted Subjunctives",
+        speakerA: "Infectious Disease Lead",
+        lineA: "Why are we initiating empiric isolation precautions so quickly?",
+        speakerB: "Triage Nurse",
+        lineB: "We isolated the patient [_____] the suspected pathogen spread to immunocompromised ward patients.",
+        targetPhrase: "We isolated the patient lest the suspected pathogen spread to immunocompromised ward patients.",
+        options: ["A. unless", "B. lest", "C. provided", "D. whereas"],
+        correct: 1,
+        explanation: "Linguistic Rationale: Negative purpose conjunction 'lest' means 'for fear that / to avoid the risk that' (takes subjunctive verb)."
+      },
+      {
+        id: 25,
+        category: "part3",
+        categoryName: "Inverted Subjunctives",
+        speakerA: "Clinical Trial Monitor",
+        lineA: "Does the drug demonstrate acceptable clinical tolerance?",
+        speakerB: "Research Fellow",
+        lineB: "Yes, the novel agent reduced tumor burden, [_____] causing mild transient nausea.",
+        targetPhrase: "Yes, the novel agent reduced tumor burden, albeit causing mild transient nausea.",
+        options: ["A. albeit", "B. whereas", "C. inasmuch as", "D. save that"],
+        correct: 0,
+        explanation: "Linguistic Rationale: Concessive conjunction 'albeit' (meaning although) modifies a reduced participle clause."
+      },
+      {
+        id: 26,
+        category: "part3",
+        categoryName: "Inverted Subjunctives",
+        speakerA: "Chief Resident",
+        lineA: "Why are we proceeding with invasive central monitoring?",
+        speakerB: "ICU Resident",
+        lineB: "[_____] the patient remains in refractory septic shock, invasive arterial access is mandatory.",
+        targetPhrase: "Inasmuch as the patient remains in refractory septic shock, invasive arterial access is mandatory.",
+        options: ["A. Inasmuch as", "B. Save that", "C. Notwithstanding that", "D. Albeit"],
+        correct: 0,
+        explanation: "Linguistic Rationale: Subordinating causal conjunction 'inasmuch as' / 'inasmuch as' means 'since / considering that'."
+      },
+      {
+        id: 27,
+        category: "part3",
+        categoryName: "Inverted Subjunctives",
+        speakerA: "Surgical Registrar",
+        lineA: "How went the post-operative recovery?",
+        speakerB: "Attending Surgeon",
+        lineB: "The course was uneventful, [_____] the patient developed a minor subcutaneous seroma.",
+        targetPhrase: "The course was uneventful, save that the patient developed a minor subcutaneous seroma.",
+        options: ["A. save that", "B. so that", "C. insomuch", "D. as long as"],
+        correct: 0,
+        explanation: "Linguistic Rationale: Exceptional conjunction 'save that' means 'except that'."
+      },
+      {
+        id: 28,
+        category: "part3",
+        categoryName: "Inverted Subjunctives",
+        speakerA: "ED Consultant",
+        lineA: "Should we proceed with emergency thrombolysis?",
+        speakerB: "Stroke Fellow",
+        lineB: "[_____] the patient presented near the end of the therapeutic window, IV tPA was administered.",
+        targetPhrase: "Notwithstanding that the patient presented near the end of the therapeutic window, IV tPA was administered.",
+        options: ["A. Inasmuch as", "B. Notwithstanding that", "C. Provided that", "D. Save that"],
+        correct: 1,
+        explanation: "Linguistic Rationale: Subordinating conjunction 'notwithstanding that' introduces a complex concessive clause (= despite the fact that)."
+      },
+      {
+        id: 29,
+        category: "part3",
+        categoryName: "Inverted Subjunctives",
+        speakerA: "Quality Safety Officer",
+        lineA: "Why was transparent error reporting institutionalized?",
+        speakerB: "Medical Director",
+        lineB: "We implemented self-reporting [_____] clinical teams could analyze system failures safely.",
+        targetPhrase: "We implemented self-reporting so that clinical teams could analyze system failures safely.",
+        options: ["A. so that", "B. in order to", "C. so as to", "D. lest"],
+        correct: 0,
+        explanation: "Linguistic Rationale: Purpose conjunction 'so that' followed by a modal clause ('could analyze')."
+      },
+      {
+        id: 30,
+        category: "part3",
+        categoryName: "Inverted Subjunctives",
+        speakerA: "Anesthesia Resident",
+        lineA: "Did the patient tolerate extubation well?",
+        speakerB: "Attending Anesthetist",
+        lineB: "The patient was extubated; [_____] persistent stridor necessitated close ICU observation.",
+        targetPhrase: "The patient was extubated; howbeit persistent stridor necessitated close ICU observation.",
+        options: ["A. howbeit", "B. whereas", "C. cause", "D. as long as"],
+        correct: 0,
+        explanation: "Linguistic Rationale: Formal adversative conjunctive adverb 'howbeit' (nevertheless / however)."
+      }
+    ];
+
+    // ARENA STATE MANAGEMENT
+    let currentIndex = 0;
+    let currentCategory = 'all';
+    let totalScore = 0;
+    let correctCount = 0;
+    let answeredCount = 0;
+    let currentStreak = 0;
+    let userAnswers = {};
+    let isAudioOn = true;
+
+    // Web Speech API references
+    let synth = window.speechSynthesis;
+    let recognition = null;
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+    }
+
+    // SYNTHESIZED WEB AUDIO SFX (ZERO EXTERNAL FILES)
+    function playSound(type) {
+      if (!isAudioOn) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+
+        if (type === 'correct') {
+          // Upbeat Celebratory Triad Fanfare
+          const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            const startTime = ctx.currentTime + (idx * 0.08);
+            gain.gain.setValueAtTime(0.15, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.3);
+
+            osc.start(startTime);
+            osc.stop(startTime + 0.3);
+          });
+        } else if (type === 'incorrect') {
+          // Low BAM Thud / Buzz Sound Effect
+          const osc1 = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc1.type = 'sawtooth';
+          osc2.type = 'square';
+
+          osc1.frequency.setValueAtTime(120, ctx.currentTime);
+          osc1.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.35);
+
+          osc2.frequency.setValueAtTime(80, ctx.currentTime);
+          osc2.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.35);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(ctx.destination);
+
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+
+          osc1.start();
+          osc2.start();
+          osc1.stop(ctx.currentTime + 0.35);
+          osc2.stop(ctx.currentTime + 0.35);
+        }
+      } catch (e) {
+        console.warn('Web Audio API initialized on user interaction.');
+      }
+    }
+
+    function toggleAudio() {
+      isAudioOn = !isAudioOn;
+      document.getElementById('audioToggleBtn').textContent = isAudioOn ? '🔊 ON' : '🔇 OFF';
+    }
+
+    // CATEGORY MATRIX FILTERING
+    function selectCategory(catKey) {
+      currentCategory = catKey;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.classList.remove('bg-gradient-to-r', 'from-indigo-600', 'to-purple-600', 'text-white', 'shadow-lg');
+        btn.classList.add('text-slate-400', 'hover:bg-slate-800', 'hover:text-white', 'border', 'border-slate-800');
+      });
+
+      const activeBtn = document.getElementById(`cat-${catKey}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-800', 'border-slate-800');
+        activeBtn.classList.add('bg-gradient-to-r', 'from-indigo-600', 'to-purple-600', 'text-white', 'shadow-lg');
+      }
+
+      // Find first question matching category
+      const firstIdx = clinicalDialogues.findIndex(q => catKey === 'all' || q.category === catKey);
+      if (firstIdx !== -1) {
+        currentIndex = firstIdx;
+      }
+      renderScenario();
+    }
+
+    // RENDER ACTIVE DIALOGAL SCENARIO
+    function renderScenario() {
+      const q = clinicalDialogues[currentIndex];
+      if (!q) return;
+
+      // Update Top Metadata
+      document.getElementById('scenarioIndexBadge').textContent = `Scenario ${q.id}/30`;
+      document.getElementById('scenarioModuleBadge').textContent = q.categoryName;
+
+      // Render Speakers
+      const dialogueBox = document.getElementById('dialogueBox');
+      const formattedLineB = q.lineB.replace(/\[_____\]/g, `<span class="px-2 py-0.5 bg-indigo-950 text-indigo-300 font-bold border-b-2 border-indigo-500 rounded font-mono-code">[ ? ]</span>`);
+
+      dialogueBox.innerHTML = `
+        <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 space-y-1">
+          <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider block">🗣️ ${q.speakerA}:</span>
+          <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">"${q.lineA}"</p>
+        </div>
+        <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 space-y-1">
+          <span class="text-[11px] font-bold text-indigo-400 uppercase tracking-wider block">🗣️ ${q.speakerB}:</span>
+          <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">"${formattedLineB}"</p>
+        </div>
+      `;
+
+      // Render Options
+      const optionsContainer = document.getElementById('optionsContainer');
+      const answered = userAnswers[q.id] !== undefined;
+      const selectedOption = userAnswers[q.id];
+
+      optionsContainer.innerHTML = '';
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.disabled = answered;
+
+        let btnStyle = "bg-slate-900 hover:bg-slate-800 text-slate-200 border-slate-800";
+        if (answered) {
+          if (idx === q.correct) {
+            btnStyle = "bg-emerald-950/80 border-emerald-500 text-emerald-200 font-bold ring-1 ring-emerald-500";
+          } else if (selectedOption === idx) {
+            btnStyle = "bg-rose-950/80 border-rose-500 text-rose-200 font-bold ring-1 ring-rose-500";
+          } else {
+            btnStyle = "bg-slate-950/40 text-slate-600 border-slate-900 opacity-50";
+          }
+        }
+
+        btn.className = `w-full text-left p-3.5 rounded-xl text-xs sm:text-sm border transition-all ${btnStyle}`;
+        btn.innerHTML = `<span class="font-mono-code mr-2 font-bold text-indigo-400">${opt.substring(0, 2)}</span>${opt.substring(3)}`;
+        btn.onclick = () => handleAnswer(idx);
+        optionsContainer.appendChild(btn);
+      });
+
+      // Explanation Box
+      const expBox = document.getElementById('explanationBox');
+      if (answered) {
+        expBox.classList.remove('hidden', 'bg-emerald-950/80', 'border-emerald-800', 'text-emerald-200', 'bg-rose-950/80', 'border-rose-800', 'text-rose-200');
+        if (selectedOption === q.correct) {
+          expBox.classList.add('bg-emerald-950/80', 'border-emerald-800/80', 'text-emerald-200');
+          expBox.innerHTML = `<div class="font-bold text-emerald-400 mb-1">✓ Correct Choice (+100 Points)</div>${q.explanation}`;
+        } else {
+          expBox.classList.add('bg-rose-950/80', 'border-rose-800/80', 'text-rose-200');
+          expBox.innerHTML = `<div class="font-bold text-rose-400 mb-1">❌ BAM! Incorrect Choice (-100 Points)</div>Correct Answer: <strong>${q.options[q.correct]}</strong>.<br>${q.explanation}`;
+        }
+      } else {
+        expBox.classList.add('hidden');
+      }
+
+      // Reset Speech Transcript UI
+      document.getElementById('speechTranscript').textContent = `"Click Record Voice and read aloud: '${q.targetPhrase}'"`;
+      document.getElementById('speechScore').textContent = '-- %';
+      document.getElementById('speechFeedback').textContent = 'Awaiting voice input';
+
+      renderMatrixGrid();
+    }
+
+    // ANSWER EVALUATION
+    function handleAnswer(optIdx) {
+      const q = clinicalDialogues[currentIndex];
+      if (userAnswers[q.id] !== undefined) return;
+
+      userAnswers[q.id] = optIdx;
+      answeredCount++;
+
+      if (optIdx === q.correct) {
+        totalScore += 100;
+        correctCount++;
+        currentStreak++;
+        playSound('correct');
+      } else {
+        totalScore -= 100;
+        currentStreak = 0;
+        playSound('incorrect');
+      }
+
+      updateScoreboard();
+      renderScenario();
+    }
+
+    function updateScoreboard() {
+      document.getElementById('scoreDisplay').textContent = totalScore;
+      document.getElementById('streakCount').textContent = currentStreak;
+
+      const pct = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 100;
+      document.getElementById('accuracyDisplay').textContent = `${pct}%`;
+    }
+
+    // MATRIX GRID NAVIGATION
+    function renderMatrixGrid() {
+      const matrixGrid = document.getElementById('matrixGrid');
+      matrixGrid.innerHTML = '';
+
+      let completedCount = 0;
+
+      clinicalDialogues.forEach((q, idx) => {
+        const isAnswered = userAnswers[q.id] !== undefined;
+        if (isAnswered) completedCount++;
+
+        const matchesCat = currentCategory === 'all' || q.category === currentCategory;
+        if (!matchesCat) return;
+
+        const isCurrent = idx === currentIndex;
+        const btn = document.createElement('button');
+        btn.onclick = () => { currentIndex = idx; renderScenario(); };
+
+        let btnClass = "bg-slate-900 text-slate-400 border-slate-800 hover:bg-slate-800";
+        if (isCurrent) {
+          btnClass = "bg-indigo-600 text-white font-bold ring-2 ring-indigo-400";
+        } else if (isAnswered) {
+          const wasCorrect = userAnswers[q.id] === q.correct;
+          btnClass = wasCorrect ? "bg-emerald-900/60 text-emerald-300 border-emerald-800 font-bold" : "bg-rose-900/60 text-rose-300 border-rose-800 font-bold";
+        }
+
+        btn.className = `h-7 w-full text-[11px] font-mono-code rounded-md transition-all flex items-center justify-center border ${btnClass}`;
+        btn.textContent = q.id;
+        matrixGrid.appendChild(btn);
+      });
+
+      document.getElementById('gridProgressText').textContent = `${completedCount}/30 Completed`;
+    }
+
+    // TEXT-TO-SPEECH (TTS) SYNTHESIS
+    function speakDialogue() {
+      if (!synth) {
+        alert("Text-to-speech synthesis is not supported in this browser.");
+        return;
+      }
+
+      synth.cancel(); // Stop any ongoing speech
+      const q = clinicalDialogues[currentIndex];
+
+      const fullSpeechText = `${q.speakerA} asks: ${q.lineA}. ${q.speakerB} replies: ${q.targetPhrase}`;
+      const utterance = new SpeechSynthesisUtterance(fullSpeechText);
+      utterance.rate = 0.95; // Natural pace for clinical articulation
+      utterance.pitch = 1.0;
+      utterance.lang = 'en-US';
+
+      synth.speak(utterance);
+    }
+
+    // VOICE RECOGNITION & PRONUNCIATION SCORING ENGINE
+    function startVoiceRecording() {
+      if (!recognition) {
+        alert("Speech recognition API is not supported in this browser. Please use Chrome, Edge, or Safari.");
+        return;
+      }
+
+      const micBtn = document.getElementById('micBtn');
+      const micBtnText = document.getElementById('micBtnText');
+      const speechTranscript = document.getElementById('speechTranscript');
+
+      micBtn.classList.add('pulse-mic', 'from-amber-600', 'to-rose-600');
+      micBtnText.textContent = "Listening...";
+      speechTranscript.textContent = "Listening to your voice... Speak clearly into microphone now.";
+
+      recognition.start();
+
+      recognition.onresult = (event) => {
+        const spokenText = event.results[0][0].transcript;
+        speechTranscript.textContent = `"${spokenText}"`;
+
+        micBtn.classList.remove('pulse-mic', 'from-amber-600', 'to-rose-600');
+        micBtnText.textContent = "Record Voice";
+
+        evaluatePronunciation(spokenText);
+      };
+
+      recognition.onerror = (event) => {
+        speechTranscript.textContent = `Speech recognition error: ${event.error}`;
+        micBtn.classList.remove('pulse-mic', 'from-amber-600', 'to-rose-600');
+        micBtnText.textContent = "Record Voice";
+      };
+
+      recognition.onend = () => {
+        micBtn.classList.remove('pulse-mic', 'from-amber-600', 'to-rose-600');
+        micBtnText.textContent = "Record Voice";
+      };
+    }
+
+    // LEVENSHTEIN DISTANCE PRONUNCIATION SIMILARITY ALGORITHM
+    function evaluatePronunciation(spokenText) {
+      const q = clinicalDialogues[currentIndex];
+      const targetText = q.targetPhrase.toLowerCase().replace(/[^a-z0-9\s]/g, '');
+      const cleanedSpoken = spokenText.toLowerCase().replace(/[^a-z0-9\s]/g, '');
+
+      const distance = levenshteinDistance(cleanedSpoken, targetText);
+      const maxLength = Math.max(cleanedSpoken.length, targetText.length);
+      const similarity = Math.max(0, Math.round(((maxLength - distance) / maxLength) * 100));
+
+      const scoreDisplay = document.getElementById('speechScore');
+      const feedbackDisplay = document.getElementById('speechFeedback');
+
+      scoreDisplay.textContent = `${similarity}%`;
+
+      if (similarity >= 85) {
+        scoreDisplay.className = "text-xl font-black text-emerald-400 font-mono-code";
+        feedbackDisplay.textContent = "Excellent Clinical Pronunciation!";
+        feedbackDisplay.className = "text-[10px] text-emerald-400 font-bold";
+      } else if (similarity >= 65) {
+        scoreDisplay.className = "text-xl font-black text-amber-400 font-mono-code";
+        feedbackDisplay.textContent = "Good Rhythm & Clarity";
+        feedbackDisplay.className = "text-[10px] text-amber-400 font-bold";
+      } else {
+        scoreDisplay.className = "text-xl font-black text-rose-400 font-mono-code";
+        feedbackDisplay.textContent = "Needs Improvement - Try TTS";
+        feedbackDisplay.className = "text-[10px] text-rose-400 font-bold";
+      }
+    }
+
+    function levenshteinDistance(a, b) {
+      const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+
+      for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+      for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+      for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return matrix[a.length][b.length];
+    }
+
+    // SCENARIO CONTROLS
+    function nextScenario() {
+      if (currentIndex < clinicalDialogues.length - 1) {
+        currentIndex++;
+        renderScenario();
+      }
+    }
+
+    function prevScenario() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderScenario();
+      }
+    }
+
+    // Initialize Arena
+    window.onload = () => {
+      renderScenario();
+    };
+  </script>
+</body>
+</html>
